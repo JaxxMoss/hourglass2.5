@@ -17,6 +17,7 @@
         >
           {{ legend }}
         </text>
+        <text class="legend-label" :transform="`matrix(1 0 0 1 0 2.8)`">&deg;C</text>
         <!-- End temperature legend -->
 
         <!-- Zero line -->
@@ -28,15 +29,11 @@
         <!-- End zero line -->
 
         <!-- Rain legend -->
-        <text class="rain-legend" :transform="`matrix(1 0 0 1 231 92.8)`">0</text>
-        <text
-          class="rain-legend"
-          v-for="i in 19"
-          :key="i.id"
-          :transform="`matrix(1 0 0 1 231 ${92.8 - i * 5})`"
-        >
+        <text :transform="`matrix(1 0 0 1 231 92.8)`">0</text>
+        <text v-for="i in 17" :key="i.id" :transform="`matrix(1 0 0 1 231 ${92.8 - i * 5})`">
           {{ i % 2 == 1 ? '-' : i * 0.5 }}
         </text>
+        <text class="legend-label" :transform="`matrix(1 0 0 1 231 2.5)`">mm</text>
         <!-- End rain legend-->
       </g>
       <!-- End legends -->
@@ -44,68 +41,80 @@
       <g id="temp-data" style="clip-path: url(#temp-clip-path)">
         <!-- Temperature clip path -->
         <defs>
-          <polygon
-            id="temp-clip-poly"
-            stroke="red"
-            stroke-width="1"
-            points="4,0 4,93 0,93 0,98 235,98 235,93 230,93 230,0"
-          ></polygon>
+          <clipPath id="temp-clip-path">
+            <polygon
+              id="temp-clip-poly"
+              stroke="red"
+              stroke-width="1"
+              points="4,0 4,93 0,93 0,98 235,98 235,93 230,93 230,0"
+            ></polygon>
+          </clipPath>
+          <clipPath id="temp-graph-clip-path">
+            <rect id="temp-graph-clip-rect" x="5" y="0" width="225" height="92.2" />
+          </clipPath>
         </defs>
-        <clipPath id="temp-clip-path">
-          <use xlink:href="#temp-clip-poly" />
-        </clipPath>
         <!-- End temperature clip path -->
 
         <!-- Temperature spline -->
-        <path id="temp-path" :d="temperature.positionStr" />
+        <path
+          id="temp-path"
+          :d="temperature.positionStr"
+          style="clip-path: url(#temp-graph-clip-path)"
+        />
         <!-- End temperature spline -->
 
         <g
           class="temp-group"
           v-for="position in temperature.positions"
           :key="position.id"
-          style="font-size: 0.25rem"
+          style="font-size: 0.25rem, clip-path(url(#temp-graph-clip-path))"
         >
           <!-- Vertical temperature lines -->
           <polygon
             :points="`${position.x},${position.y + 1} ${position.x},92`"
             :class="`temp-line ${tempLineClass(position.label)}`"
+            style="clip-path: url(#temp-graph-clip-path)"
           />
           <!-- End vertical temperature lines -->
 
           <!-- Normal temperature circle-->
-          <g v-if="!position.label" class="normal-group">
+          <g
+            v-if="!position.label"
+            class="normal-group"
+            style="clip-path: url(#temp-graph-clip-path)"
+          >
             <circle class="temp-circle" :cx="position.x" :cy="position.y" />
           </g>
           <!-- End normal temperature circle-->
           <g v-else class="special-temp">
             <!-- Eigth hour circle-->
-            <circle
-              v-if="!position.label.isQuarter"
-              class="eighth-circle"
-              :cx="position.x"
-              :cy="position.y"
-            />
-            <!-- End eigth hour circle-->
+            <g style="clip-path: url(#temp-graph-clip-path)">
+              <circle
+                v-if="!position.label.isQuarter"
+                class="eighth-circle"
+                :cx="position.x"
+                :cy="position.y"
+              />
+              <!-- End eigth hour circle-->
 
-            <!-- Quarter hour circle-->
-            <circle
-              v-if="position.label.isQuarter"
-              class="quarter-circle"
-              :cx="position.x"
-              :cy="position.y"
-            />
-            <!-- End quarter hour circle-->
-            <!-- Temperature label -->
-            <text
-              v-if="position.label.temp"
-              class="temp-label"
-              :transform="`matrix(1 0 0 1 ${position.x - 3} ${position.y - 2})`"
-            >
-              {{ position.label.temp }}
-            </text>
-            <!-- End temperature label -->
-
+              <!-- Quarter hour circle-->
+              <circle
+                v-if="position.label.isQuarter"
+                class="quarter-circle"
+                :cx="position.x"
+                :cy="position.y"
+              />
+              <!-- End quarter hour circle-->
+              <!-- Temperature label -->
+              <text
+                v-if="position.label.temp"
+                class="temp-label"
+                :transform="`matrix(1 0 0 1 ${position.x - 3} ${position.y - 2})`"
+              >
+                {{ position.label.temp }}
+              </text>
+              <!-- End temperature label -->
+            </g>
             <!-- Time label -->
             <text
               :class="`time-label ${position.label.isQuarter ? 'quarter' : 'eighth'}`"
@@ -259,6 +268,10 @@ function formatData() {
   font-family: monospace;
   text-align: right;
   fill: var(--light-blue-30);
+}
+
+.legend-label {
+  fill: var(--light-blue);
 }
 
 #grid {

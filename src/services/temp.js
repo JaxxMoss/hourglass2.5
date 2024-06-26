@@ -36,7 +36,7 @@ export function getMinMax(data) {
     return hour.temp
   })
 
-  const avgTemp = (Math.max.apply(null, temps) + Math.min.apply(null, temps)) / 2;
+  const avgTemp = (Math.max.apply(null, temps) + Math.min.apply(null, temps)) / 2
 
   const min = Math.floor((avgTemp - 5) / 5) * 5
   const max = min + 18
@@ -49,7 +49,7 @@ export function generateLegend(minmax) {
 
   let c = 0
 
-  for (let i = minmax.min; i <= minmax.max; i++) {
+  for (let i = minmax.min; i < minmax.max; i++) {
     const x = i.toString().length > 1 ? 0 : 2
     const y = 93 - 5 * c
 
