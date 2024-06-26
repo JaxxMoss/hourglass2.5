@@ -35,7 +35,7 @@ export function isEigth(timestamp) {
 }
 
 export function dayName(num) {
-  const days = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag']
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   return days[num]
 }
 
@@ -43,14 +43,14 @@ export function monthName(num) {
   const months = [
     'januari',
     'februari',
-    'maart',
+    'march',
     'april',
-    'mei',
-    'juni',
+    'may',
+    'june',
     'juli',
-    'augustus',
+    'august',
     'september',
-    'oktober',
+    'october',
     'november',
     'december'
   ]
