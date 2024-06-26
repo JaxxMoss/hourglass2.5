@@ -41,13 +41,13 @@ export function dayName(num) {
 
 export function monthName(num) {
   const months = [
-    'januari',
-    'februari',
+    'january',
+    'february',
     'march',
     'april',
     'may',
     'june',
-    'juli',
+    'july',
     'august',
     'september',
     'october',
